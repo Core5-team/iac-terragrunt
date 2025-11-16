@@ -18,5 +18,9 @@ remote_state {
 
 inputs = {
   enable_consul  = true
+  enable_iam_ssm = true
+  enable_lb = true
+  enable_web = true
+  enable_db = true
   role_arn       = get_env("ROLE_ARN")
 }
