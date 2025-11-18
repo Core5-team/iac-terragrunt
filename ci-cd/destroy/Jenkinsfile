@@ -64,7 +64,7 @@ pipeline {
                         export AWS_REGION=${env.AWS_REGION}
                         cd ${env.TERRAGRUNT_DIR}
                         terragrunt init
-						terragrunt plan -destroy
+						            terragrunt plan -destroy
                     """
                 }
             }
