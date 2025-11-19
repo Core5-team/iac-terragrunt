@@ -22,6 +22,7 @@ inputs = {
   enable_lb = true
   enable_web = true
   enable_db = true
+  enable_monitoring = true
   env = "prod"
   available_zone = "eu-central-1a"
   birdwatching_dns_name = "birdwatching.pp.ua"

@@ -1,7 +1,7 @@
 
 locals {
   region         = "eu-central-1"
-  module_source  = "github.com/The-A-Team-organization/iac_account_setup.git//modules?ref=TAT-87_Implement_account_setup_infrastructure_via_terraform"
+  module_source  = "github.com/The-A-Team-organization/iac_account_setup.git//modules?ref=TAT-104-Create-Main-Monitoring-Instance-with-Prometheus-Grafana-Loki-and-Access-for-Additional-Instances-Grafana-Alloy-Compatible"
 }
 
 
