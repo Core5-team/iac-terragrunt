@@ -1,7 +1,7 @@
 
 locals {
   region         = "eu-central-1"
-  module_source  = "github.com/The-A-Team-organization/iac_account_setup.git//modules?ref=TAT-108-Remove-Route53-record-for-Consul-server-to-reduce-unnecessary-costs"
+  module_source  = "github.com/The-A-Team-organization/iac_account_setup.git//modules?ref=main"
 }
 
 
