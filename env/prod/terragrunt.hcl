@@ -25,7 +25,7 @@ inputs = {
   enable_monitoring = true
   env = "prod"
   available_zone = "eu-central-1c"
-  birdwatching_dns_name = "birdwatching.pp.ua"
+  birdwatching_dns_name = "birdwatching-app.pp.ua"
   birdwatching_ami_id = "ami-004e960cde33f9146"
   role_arn       = get_env("ROLE_ARN")
 }
