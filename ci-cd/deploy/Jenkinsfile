@@ -65,7 +65,7 @@ pipeline {
                         export AWS_REGION=${env.AWS_REGION}
                         cd ${env.TERRAGRUNT_DIR}
                         ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
-                        terragrunt init --backend-bootstrap --auto-approve
+                        terragrunt init --backend-bootstrap
                         terragrunt plan
                     """
                 }
