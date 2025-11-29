@@ -25,6 +25,6 @@ inputs = {
   env = "dev_01"
   available_zone = "us-east-1a"
   birdwatching_dns_name = "birdwatching-app.pp.ua"
-  birdwatching_ami_id = "ami-004e960cde33f9146"
+  birdwatching_ami_id = "ami-0ecb62995f68bb549"
   role_arn       = get_env("ROLE_ARN")
 }
