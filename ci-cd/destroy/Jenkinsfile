@@ -32,13 +32,13 @@ pipeline {
                         env.AWS_CREDENTIALS_ID = "aws-dev-account-key"
                     }
 
-					else if (params.ENV == 'prod') {
+					else if (params.ENV == 'prod_01') {
                         env.TERRAGRUNT_DIR = "env/prod_01"
                         credsId = "aws-prod-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-prod-account-key"
                     }
 
-					else if (params.ENV == 'stage') {
+					else if (params.ENV == 'stage_01') {
                         env.TERRAGRUNT_DIR = "env/stage_01/infrastructure"
                         credsId = "aws-stage-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-stage-account-key"
