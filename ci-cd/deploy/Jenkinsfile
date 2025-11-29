@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'ENV', choices: ['dev_01', 'stage_01', 'prod_01'], description: 'Select environment')
+        choice(name: 'ENV', choices: ['dev_01', 'stage', 'prod_01'], description: 'Select environment')
     }
 
 
@@ -65,7 +65,7 @@ pipeline {
                         export AWS_REGION=${env.AWS_REGION}
                         cd ${env.TERRAGRUNT_DIR}
                         ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
-                        terragrunt init
+                        terragrunt init --backend-bootstrap
                         terragrunt plan
                     """
                 }
