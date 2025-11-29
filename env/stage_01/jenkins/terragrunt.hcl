@@ -7,9 +7,9 @@ include {
 remote_state {
   backend = "s3"
   config = {
-    region       = "eu-central-1"
-    bucket       = "team-a-tf-state-stage"
-    key          = "stage/jenkins/terraform.tfstate"
+    region       = "us-east-1"
+    bucket       = "core5-tf-state-stage-01"
+    key          = "stage-01/jenkins/terraform.tfstate"
     encrypt      = true
     use_lockfile = true
   }
@@ -19,5 +19,5 @@ remote_state {
 inputs = {
   enable_jenkins     = true
   jenkins_role_name  = "jenkins_role_stage"
-  role_arn           = "arn:aws:iam::165015980393:role/TerraformRoleStage"
+  role_arn           = "arn:aws:iam::235194330448:role/TerraformRoleStage"
 }

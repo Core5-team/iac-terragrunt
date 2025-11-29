@@ -1,7 +1,7 @@
 
 locals {
-  region         = "eu-central-1"
-  module_source  = "github.com/The-A-Team-organization/iac_account_setup.git//modules?ref=main"
+  region         = "us-east-1"
+  module_source  = "github.com/Core5-team/iac_account_setup//modules?ref=CORE5-13-fork-iac-core-repo-and-change-path"
 }
 
 
@@ -12,5 +12,5 @@ terraform {
 
 inputs = {
   aws_region   = local.region
-  ami_id       = "ami-0a5b0d219e493191b"
+  ami_id       = "ami-0fa3fe0fa7920f68e"
 }
