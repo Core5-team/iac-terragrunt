@@ -17,15 +17,15 @@ remote_state {
 
 
 inputs = {
-  #enable_consul  = true
+  enable_consul  = true
   enable_iam_ssm = true
-  #enable_lb = true
-  #enable_web = true
-  #enable_db = true
+  enable_lb = true
+  enable_web = true
+  enable_db = true
   enable_monitoring = true
   env = "prod_01"
   available_zone = "us-east-1a"
-  #birdwatching_dns_name = "birdwatching-app.pp.ua"
+  birdwatching_dns_name = "birdwatching-app.pp.ua"
   birdwatching_ami_id = "ami-0ecb62995f68bb549"
   role_arn       = get_env("ROLE_ARN")
 }
