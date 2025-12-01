@@ -16,7 +16,7 @@ remote_state {
 }
 
 inputs = {
-  enable_jenkins = true
+  
   enable_consul  = true
   enable_iam_ssm = true
   enable_lb = true
