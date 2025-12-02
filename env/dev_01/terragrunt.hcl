@@ -16,6 +16,7 @@ remote_state {
 }
 
 inputs = {
+  create_vpc = true
   enable_consul  = true
   enable_iam_ssm = true
   enable_lb = true

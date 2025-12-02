@@ -26,6 +26,9 @@ remote_state {
 
 inputs = {
   
+  enable_jenkins = false   
+  create_vpc     = false
+
   vpc_id        = dependency.jenkins.outputs.vpc_id
   igw_id        = dependency.jenkins.outputs.igw_id
   key_pair      = dependency.jenkins.outputs.key_pair_name
