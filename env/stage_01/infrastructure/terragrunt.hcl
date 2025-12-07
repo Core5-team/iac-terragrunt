@@ -1,37 +1,36 @@
-
-include {
+include "root"{
   path = find_in_parent_folders("root.hcl")
 }
 
-dependency "jenkins" {
-  config_path = "../jenkins"
+locals {
+  env = split("/", path_relative_to_include())[0]
+}
 
+
+terraform {
+  source = "github.com/Core5-team/iac_account_setup//modules?ref=CORE5-13-fork-iac-core-repo-and-change-path"
+}
+
+
+
+dependency "network" {
+  config_path = "../network"
   mock_outputs = {
-    vpc_id        = "vpc-mock"
-    igw_id        = "igw-mock"
-    key_pair_name = "mock-key"
+    vpc_id               = "vpc-xxxx"
+    igw_id   = "igw-xxxx"
   }
 }
 
-remote_state {
-  backend = "s3"
-  config = {
-    region       = "us-east-1"
-    bucket       = "core5-tf-state-stage-01"
-    key          = "stage-01/infrastructure/terraform.tfstate"
-    encrypt      = true
-    use_lockfile = true
-  }
-}
 
 inputs = {
   
   enable_jenkins = false   
   create_vpc     = false
 
-  vpc_id        = dependency.jenkins.outputs.vpc_id
-  igw_id        = dependency.jenkins.outputs.igw_id
-  key_pair      = dependency.jenkins.outputs.key_pair_name
+  vpc_id        = dependency.network.outputs.vpc_id
+  igw_id        = dependency.network.outputs.internet_gateway_id
+  nat_id        = dependency.network.outputs.aws_nat_gateway_id  
+  public_rt_id  = dependency.network.outputs.public_route_table_id
   
   enable_consul  = true
   enable_iam_ssm = true
@@ -39,10 +38,11 @@ inputs = {
   enable_web = true
   enable_db = true
   enable_monitoring = true
-  env = "stage_01"
+  env = local.env
   available_zone = "us-east-1a"
   birdwatching_dns_name = "birdwatching-app.pp.ua"
   birdwatching_ami_id = "ami-0ecb62995f68bb549"
-  role_arn       = get_env("ROLE_ARN")
+  #role_arn       = get_env("ROLE_ARN")
+  role_arn           = "arn:aws:iam::177362731942:role/TerraformRoleStage"
   
 }
