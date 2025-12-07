@@ -33,14 +33,14 @@ pipeline {
                     }
 
 					else if (params.ENV == 'prod_01') {
-                        env.TERRAGRUNT_DIR = "env/prod_01"
+                        env.TERRAGRUNT_DIR = "env/prod_01/eks"
                         credsId = "aws-prod-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-prod-account-key"
 
                     }
 
 					else if (params.ENV == 'stage_01') {
-						env.TERRAGRUNT_DIR = "env/stage_01/infrastructure"
+						env.TERRAGRUNT_DIR = "env/stage_01/eks"
                         credsId = "aws-stage-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-stage-account-key"
 
@@ -65,6 +65,7 @@ pipeline {
                         export AWS_REGION=${env.AWS_REGION}
                         cd ${env.TERRAGRUNT_DIR}
                         ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
+                        rm -rf .terragrunt-cache
                         terragrunt init --backend-bootstrap
                         terragrunt plan
                     """

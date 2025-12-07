@@ -1,29 +1,19 @@
 include "root"{
   path = find_in_parent_folders("root.hcl")
+  expose = true
 }
 
+locals {
+  env = split("/", path_relative_to_include())[0]
+}
 terraform {
   source = "git::https://github.com/Core5-team/illuminati_eks.git?ref=CORE5-18-rewrite-eks-code"
 }
 
-remote_state {
-  backend = "s3"
-  config = {
-    bucket = "core5-tf-state-stage-02"
-    key    = "stage-02/eks/terraform.tfstate"
-    region = "us-east-1"
-      encrypt      = true
-    use_lockfile = true
-  }
-}
 
 dependency "network" {
   config_path = "../network"
-  mock_outputs = {
-    vpc_id               = "vpc-xxxx"
-    igw_id   = "igw-xxxx"
-    
-  }
+
 }
 
 
@@ -32,7 +22,7 @@ inputs = {
 
 vpc_id                = dependency.network.outputs.vpc_id
 
-region                = "us-east-1"
+region                = include.root.locals.region
 
 #--------------------------------------------------------- Availability Zones
 
@@ -52,7 +42,7 @@ desired_size = 2
 #--------------------------------------------------------- Cluster Configuration Variables
 
 eks_cluster_name        = "illuminati_app_cluster" # Like illuminati_app_cluster
-environment_name        = "stage_01" # Like dev, stage or prod
+environment_name        = local.env # Like dev, stage or prod
 eks_cluster_k8s_version = "1.34"
 
 #--------------------------------------------------------- Nodes Configuration Variables
@@ -80,7 +70,7 @@ db_private_subnet_2 = "10.0.15.0/24"
   
   
 
-  # #role_arn       = get_env("ROLE_ARN")
+  #role_arn       = get_env("ROLE_ARN")
   # role_arn           = "arn:aws:iam::177362731942:role/TerraformRoleStage"
   
 }
