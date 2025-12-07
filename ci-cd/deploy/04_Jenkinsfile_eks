@@ -86,31 +86,44 @@ pipeline {
 
 
         stage('Terragrunt Apply') {
-            steps {
-                script {
+        steps {
+            script {
+                def userInput = input(
+                    id: 'ProceedApply',
+                    message: "Apply changes to ${params.ENV}?",
+                    parameters: [
+                        [$class: 'BooleanParameterDefinition',
+                        defaultValue: true,
+                        description: 'Check to proceed',
+                        name: 'Confirm']
+                    ]
+                )
 
-                    def userInput = input(
-                        id: 'ProceedApply', message: "Apply changes to ${params.ENV}?", parameters: [
-                            [$class: 'BooleanParameterDefinition', defaultValue: true, description: 'Check to proceed', name: 'Confirm']
-                        ]
-                    )
+                if (userInput) {
+                    withCredentials([
+                        // AWS credentials
+                        [$class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: "${env.AWS_CREDENTIALS_ID}"],
 
-                    if (userInput) {
-                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${env.AWS_CREDENTIALS_ID}"]]) {
-                            sh """
-                                export AWS_REGION=${env.AWS_REGION}
-                                cd ${env.TERRAGRUNT_DIR}
-                                ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
-                                terragrunt apply -auto-approve
-                            """
-                        }
+                        // DB secrets
+                        string(credentialsId: 'db_user', variable: 'DB_USER'),
+                        string(credentialsId: 'db_pass', variable: 'DB_PASS')
+                    ]) {
+                        sh """
+                            export AWS_REGION=${env.AWS_REGION}
+                            cd ${env.TERRAGRUNT_DIR}
+
+                            ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
+
+                            terragrunt apply -auto-approve
+                        """
                     }
-
-					else {
-                        echo "Apply skipped"
-                    }
+                } else {
+                    echo "Apply skipped"
                 }
             }
         }
+    }
+
     }
 }
