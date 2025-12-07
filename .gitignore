@@ -2,6 +2,7 @@
 .idea
 
 **/.terraform.lock.hcl/*
+**/.terragrunt-cache/*
 env/dev_01/.terraform.lock.hcl
 env/dev_01/.terragrunt-cache
 
