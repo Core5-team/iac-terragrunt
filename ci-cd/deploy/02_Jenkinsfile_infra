@@ -33,7 +33,7 @@ pipeline {
                     }
 
 					else if (params.ENV == 'prod_01') {
-                        env.TERRAGRUNT_DIR = "env/prod_01"
+                        env.TERRAGRUNT_DIR = "env/prod_01/infrastructure"
                         credsId = "aws-prod-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-prod-account-key"
 
