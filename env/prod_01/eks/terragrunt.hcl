@@ -54,12 +54,14 @@ node_instance_types = ["c7i-flex.large"]
 
 public_route_table_id = dependency.network.outputs.public_route_table_id # Like rtb-xxxxxxxxxxxxxxxxx
 existing_nat_gateway_id = dependency.network.outputs.aws_nat_gateway_id # Like nat-xxxxxxxxxxxxxxxxx
-domain_name           = "illuminati-core5-stage-02.pp.ua" # Like example.com
+domain_name           = "illuminati-core5-stage-01.pp.ua" # Like example.com
 
 #--------------------------------------------------------- Database Setup
 
 db_username         = get_env("DB_USER") # The username should be between 1 and 16 characters.
 db_password         = get_env("DB_PASS") # The password should consist of at least 8 characters.
+
+
 
 db_private_subnet_1 = "10.0.14.0/24" 
 db_private_subnet_2 = "10.0.15.0/24"
@@ -71,6 +73,6 @@ db_private_subnet_2 = "10.0.15.0/24"
   
 
   role_arn       = get_env("ROLE_ARN")
-  # role_arn           = "arn:aws:iam::177362731942:role/TerraformRoleStage"
+  #role_arn           = "arn:aws:iam::896015496924:role/TerraformRoleStage"
   
 }
