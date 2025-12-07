@@ -7,7 +7,7 @@ locals {
   env = split("/", path_relative_to_include())[0]
 }
 terraform {
-  source = "git::https://github.com/Core5-team/illuminati_eks.git?ref=CORE5-18-rewrite-eks-code"
+  source = "git::https://github.com/Core5-team/illuminati_eks.git?ref=CORE5-18--test-for-jenkins"
 }
 
 
