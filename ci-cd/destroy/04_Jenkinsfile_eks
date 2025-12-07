@@ -56,9 +56,17 @@ pipeline {
         }
 
 
-        stage('Terragrunt Init') {
+     stage('Terragrunt Init & Plan') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${env.AWS_CREDENTIALS_ID}"]]) {
+                withCredentials([
+                    // AWS credentials
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: "${env.AWS_CREDENTIALS_ID}"],
+
+                    // DB secrets
+                    string(credentialsId: 'db_user', variable: 'DB_USER'),
+                    string(credentialsId: 'db_pass', variable: 'DB_PASS')
+                ]) {{
                     sh """
                         export ROLE_ARN=${env.AWS_ROLE_ARN}
                         export AWS_REGION=${env.AWS_REGION}
@@ -66,7 +74,7 @@ pipeline {
                         terragrunt init
 						            terragrunt plan -destroy
                     """
-                }
+                }}
             }
         }
 
