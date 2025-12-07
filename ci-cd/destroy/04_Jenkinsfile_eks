@@ -56,7 +56,7 @@ pipeline {
         }
 
 
-     stage('Terragrunt Init & Plan') {
+        stage('Terragrunt Init & Plan') {
             steps {
                 withCredentials([
                     // AWS credentials
@@ -66,15 +66,18 @@ pipeline {
                     // DB secrets
                     string(credentialsId: 'db_user', variable: 'DB_USER'),
                     string(credentialsId: 'db_pass', variable: 'DB_PASS')
-                ]) {{
+                ]) {
                     sh """
-                        export ROLE_ARN=${env.AWS_ROLE_ARN}
                         export AWS_REGION=${env.AWS_REGION}
                         cd ${env.TERRAGRUNT_DIR}
+
+                        ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
+
+                        rm -rf .terragrunt-cache
                         terragrunt init
-						            terragrunt plan -destroy
+                        terragrunt plan -destroy
                     """
-                }}
+                }
             }
         }
 
