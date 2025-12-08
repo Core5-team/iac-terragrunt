@@ -1,90 +1,100 @@
-"" This repository contains the Terragrunt configuration used to deploy cloud infrastructure across multiple environments (dev, stage, prod) using the account-setup Terraform modules.
+# Terragrunt Deployment Flow
 
-The project supports two provisioning modes:
+Overview
 
-## Mode A – Deploy infrastructure inside an existing VPC (Stage)
+All Terragrunt logic is centralized in the top-level root.hcl, which:
 
-Used when Jenkins creates the VPC first, and the rest of the infrastructure must reuse it.
+Creates an S3 backend bucket for Terraform state in the target AWS account
 
-## Mode B – Full standalone provisioning (Dev/Prod)
+Generates state keys based on the folder path
 
-The environment creates its own VPC without Jenkins.
-
-This behavior is controlled through Terragrunt inputs using create_vpc and Terragrunt dependency.
-
-## Repository Structure
+Allows usage of logically independent modules, such as:
 
 ```
-iac-terragrunt/
-│
-├── root.hcl
-│
-└── env/
-    ├── dev_01/
-    │   └── infrastructure/
-    ├── stage_01/
-    │   ├── jenkins/
-    │   └── infrastructure/
-    └── prod_01/
-        └── infrastructure/
+network / jenkins / infrastructure / eks
 ```
 
-## Root module
+Each module manages its own state but follows a unified backend and configuration approach.
 
-root.hcl defines:
+## Stage Account – Deployment Order
 
-AWS region
+### 1. Prerequisites
 
-Shared Terraform source (iac_account_setup)
+Before starting:
 
-Global inputs like aws_region and base AMI
+Configure AWS CLI
 
-All environment configs inherit from it.
+Create and configure an AWS profile for the stage account
 
-## Stage Environment Logic
+Clone the Terragrunt repository
 
-1. stage_01/jenkins/
+### 2. Network Deployment
 
-Jenkins is deployed first.
-It creates:
-
-VPC
-
-Internet Gateway
-
-Key Pair
-
-## stage_01/infrastructure/
-
-Infrastructure depends on Jenkins state:
+Navigate to the network module:
 
 ```
-dependency "jenkins" {
-  config_path = "../jenkins"
-}
+env/stage_01/network
 ```
 
-## Prod / Dev Environment Logic
-
-These environments do not include Jenkins logic and instead create their own VPC:
+Initialize the backend (this step creates the S3 state bucket):
 
 ```
-create_vpc = true
-enable_jenkins = false
+terragrunt init --backend-bootstrap
 ```
 
-### How to Deploy
-
-1. Deploy Jenkins (stage only)
-
-Run locally
+Apply the configuration:
 
 ```
-cd env/stage_01/jenkins
+terragrunt apply
+```
+
+### 3. Jenkins Deployment
+
+Navigate to the Jenkins module:
+
+```
+env/stage_01/jenkins
+```
+
+Run the same steps:
+
+```
 terragrunt init --backend-bootstrap
 terragrunt apply
 ```
 
-2. Deploy infrastructure (all environments)
+### 4. Further Deployments via Jenkins
 
-Configure and run jenkins pipelines with parameters from jenkins ui
+Once Jenkins is configured and running:
+
+All subsequent deployments (infrastructure, eks, etc.)
+
+Should be executed via Jenkins pipelines, not manually
+
+This ensures consistent role assumption and controlled access.
+
+## Local Deployment (Without Jenkins)
+
+If infrastructure needs to be deployed locally instead of via Jenkins:
+
+Create an IAM role in the AWS account with the required permissions
+
+In the infrastructure Terragrunt configuration:
+
+Comment out the line using:
+
+```
+get_env("ROLE_ARN")
+```
+
+Uncomment the configuration with a hardcoded role_arn
+
+This allows Terragrunt to use the locally configured AWS profile instead of Jenkins role assumption.
+
+Notes
+
+Backend bootstrap (--backend-bootstrap) is required only once per account
+
+Each module remains independent but shares the same global backend logic
+
+Jenkins is the preferred execution environment after initial bootstrap
