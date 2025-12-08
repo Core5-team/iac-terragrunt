@@ -9,7 +9,7 @@ locals {
 }
 
 terraform {
-  source = "git::https://github.com/Core5-team/iac_core.git//modules/jenkins?ref=CORE5-14-change-tags-in-iac-core"
+  source = "git::https://github.com/Core5-team/iac_core.git//modules/jenkins?ref=main"
 }
 
 
