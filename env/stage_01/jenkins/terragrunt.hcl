@@ -26,7 +26,6 @@ inputs = {
   vpc_id            = dependency.network.outputs.vpc_id
   igw_id            = dependency.network.outputs.internet_gateway_id
   env               = local.env
-  user_data         = "templates/user_data.tftpl"
   instance_type     = include.root.locals.jenkins_instance_type
   availability_zone = include.root.locals.jenkinsavailability_zone
   subnet_cidr       = include.root.locals.jenkins_cidr
