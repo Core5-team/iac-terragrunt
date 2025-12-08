@@ -116,6 +116,7 @@ pipeline {
                             ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
 
                             terragrunt apply -auto-approve
+                            rm -rf .terragrunt-cache
                         """
                     }
                 } else {
