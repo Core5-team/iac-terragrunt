@@ -54,7 +54,7 @@ node_instance_types = ["c7i-flex.large"]
 
 public_route_table_id = dependency.network.outputs.public_route_table_id # Like rtb-xxxxxxxxxxxxxxxxx
 existing_nat_gateway_id = dependency.network.outputs.aws_nat_gateway_id # Like nat-xxxxxxxxxxxxxxxxx
-domain_name           = "illuminati-core5-stage-01.pp.ua" # Like example.com
+domain_name           = "door-store.pp.ua" # Like example.com
 
 #--------------------------------------------------------- Database Setup
 
