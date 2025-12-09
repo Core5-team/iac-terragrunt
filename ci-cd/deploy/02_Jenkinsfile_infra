@@ -1,10 +1,9 @@
 
 pipeline {
-
     agent any
 
     parameters {
-        choice(name: 'ENV', choices: ['dev_01', 'stage_01', 'prod_01'], description: 'Environment to destroy')
+        choice(name: 'ENV', choices: ['dev_01', 'stage_01', 'prod_01'], description: 'Select environment')
     }
 
 
@@ -30,18 +29,21 @@ pipeline {
                         env.TERRAGRUNT_DIR = "env/dev_01"
                         credsId = "aws-dev-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-dev-account-key"
+
                     }
 
 					else if (params.ENV == 'prod_01') {
-                        env.TERRAGRUNT_DIR = "env/prod_01"
+                        env.TERRAGRUNT_DIR = "env/prod_01/infrastructure"
                         credsId = "aws-prod-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-prod-account-key"
+
                     }
 
 					else if (params.ENV == 'stage_01') {
-                        env.TERRAGRUNT_DIR = "env/stage_01/infrastructure"
+						env.TERRAGRUNT_DIR = "env/stage_01/infrastructure"
                         credsId = "aws-stage-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-stage-account-key"
+
                     }
 
 					else {
@@ -56,44 +58,46 @@ pipeline {
         }
 
 
-        stage('Terragrunt Init') {
+        stage('Terragrunt Init & Plan') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${env.AWS_CREDENTIALS_ID}"]]) {
                     sh """
-                        export ROLE_ARN=${env.AWS_ROLE_ARN}
                         export AWS_REGION=${env.AWS_REGION}
                         cd ${env.TERRAGRUNT_DIR}
-                        terragrunt init
-						            terragrunt plan -destroy
+                        ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
+                        rm -rf .terragrunt-cache
+                        terragrunt init --backend-bootstrap
+                        terragrunt plan
                     """
                 }
             }
         }
 
 
-        stage('Terragrunt Destroy') {
+        stage('Terragrunt Apply') {
             steps {
                 script {
 
                     def userInput = input(
-                        id: 'ProceedDestroy', message: "Destroy resources in ${params.ENV}?", parameters: [
-                            [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Check to proceed', name: 'Confirm']
+                        id: 'ProceedApply', message: "Apply changes to ${params.ENV}?", parameters: [
+                            [$class: 'BooleanParameterDefinition', defaultValue: true, description: 'Check to proceed', name: 'Confirm']
                         ]
                     )
 
                     if (userInput) {
                         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${env.AWS_CREDENTIALS_ID}"]]) {
                             sh """
-                                export ROLE_ARN=${env.AWS_ROLE_ARN}
                                 export AWS_REGION=${env.AWS_REGION}
                                 cd ${env.TERRAGRUNT_DIR}
-                                terragrunt destroy -auto-approve
+                                ${env.AWS_ROLE_ARN ? "export ROLE_ARN=${env.AWS_ROLE_ARN}" : ""}
+                                terragrunt apply -auto-approve
+                                rm -rf .terragrunt-cache
                             """
                         }
                     }
 
 					else {
-                        echo "Destroy skipped"
+                        echo "Apply skipped"
                     }
                 }
             }

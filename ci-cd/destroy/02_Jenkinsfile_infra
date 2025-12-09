@@ -33,7 +33,7 @@ pipeline {
                     }
 
 					else if (params.ENV == 'prod_01') {
-                        env.TERRAGRUNT_DIR = "env/prod_01"
+                        env.TERRAGRUNT_DIR = "env/prod_01/infrastructure"
                         credsId = "aws-prod-account-id"
                         env.AWS_CREDENTIALS_ID = "aws-prod-account-key"
                     }
@@ -64,7 +64,7 @@ pipeline {
                         export AWS_REGION=${env.AWS_REGION}
                         cd ${env.TERRAGRUNT_DIR}
                         terragrunt init
-						            terragrunt plan -destroy
+						terragrunt plan -destroy
                     """
                 }
             }
@@ -88,6 +88,7 @@ pipeline {
                                 export AWS_REGION=${env.AWS_REGION}
                                 cd ${env.TERRAGRUNT_DIR}
                                 terragrunt destroy -auto-approve
+                                rm -rf .terragrunt-cache
                             """
                         }
                     }

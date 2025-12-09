@@ -1,15 +1,16 @@
 
 .idea
 
+**/.terraform.lock.hcl/*
+**/.terragrunt-cache/*
+env/dev_01/.terraform.lock.hcl
+env/dev_01/.terragrunt-cache
 
-env/dev/.terraform.lock.hcl
-env/dev/.terragrunt-cache
+env/stage_01/jenkins/.terragrunt-cache/
+env/stage_01/jenkins/.terraform.lock.hcl
 
-env/stage/jenkins/.terragrunt-cache/
-env/stage/jenkins/.terraform.lock.hcl
+env/stage_01/infrastructure/.terraform.lock.hcl
+env/stage_01/infrastructure/.terragrunt-cache/
 
-env/stage/infrastructure/.terraform.lock.hcl
-env/stage/infrastructure/.terragrunt-cache/
-
-env/prod/.terraform.lock.hcl
-env/prd/.terragrunt-cache/
+env/prod_01/.terraform.lock.hcl
+env/prod_01/.terragrunt-cache/

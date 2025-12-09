@@ -1,16 +1,22 @@
+  locals {
+  region         = "us-east-1"
+  jenkins_ami_id = "ami-0c5b6ddef5dedc1fd"
+  jenkins_instance_type = "c7i-flex.large"
+  jenkinsavailability_zone = "us-east-1a"
+  jenkins_cidr       = "10.0.1.0/24"
 
-locals {
-  region         = "eu-central-1"
-  module_source  = "github.com/The-A-Team-organization/iac_account_setup.git//modules?ref=main"
-}
+  account_id = get_aws_account_id()
+ 
+  state_bucket = "core5-tf-state-${local.account_id}"
 
+  
+  }
 
-terraform {
-  source = local.module_source
-}
-
-
-inputs = {
-  aws_region   = local.region
-  ami_id       = "ami-0a5b0d219e493191b"
-}
+  remote_state {
+  backend = "s3"
+  config = {
+    bucket = local.state_bucket
+    key    = "${path_relative_to_include()}/terraform.tfstate"
+    region = "us-east-1"
+  }
+  }
